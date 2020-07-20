@@ -9,13 +9,13 @@
 import React from 'react';
 import {SafeAreaView} from 'react-native';
 
-import DailyWaterTracker from './DailyWaterTracker.js';
+import WaterTracker from './WaterTracker.js';
 
 const App: () => React$Node = () => {
   return (
     <>
       <SafeAreaView>
-        <DailyWaterTracker />
+        <WaterTracker />
       </SafeAreaView>
     </>
   );

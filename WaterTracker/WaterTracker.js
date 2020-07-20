@@ -19,20 +19,24 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 
 export default class WaterTracker extends React.Component {
   state = {
-    h: 100,
+    h: 0,
   };
   _onPress = () => {
     LayoutAnimation.spring();
-    this.setState({h: this.state.h + 15});
+    this.setState({h: this.state.h + 0.1});
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <View style={[styles.bar, {height: this.state.h}]} />
+        <Text style={styles.title}>How much water have I had today?</Text>
         <TouchableOpacity onPress={this._onPress} style={styles.button}>
           <Text style={styles.buttonText}>Add 100 ml</Text>
         </TouchableOpacity>
+        <View style={[styles.bar, {height: this.state.h * 100}]} />
+        <View style={styles.line}>
+          <Text style={styles.subtitle}>Goal</Text>
+        </View>
       </View>
     );
   }
@@ -41,6 +45,17 @@ export default class WaterTracker extends React.Component {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
+  },
+  title: {
+    textAlign: 'center',
+    marginVertical: 30,
+    marginHorizontal: 30,
+    fontSize: 40,
+  },
+  subtitle: {
+    textAlign: 'center',
+    marginVertical: 10,
+    fontSize: 30,
   },
   bar: {
     backgroundColor: '#ADD8E6',
@@ -61,5 +76,10 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 18,
+  },
+  line: {
+    width: WIDTH,
+    borderTopWidth: 5,
+    borderTopColor: '#FFCCCB',
   },
 });

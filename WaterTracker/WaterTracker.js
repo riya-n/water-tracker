@@ -15,6 +15,7 @@ import {
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
 const BASE_HEIGHT = -HEIGHT * 0.7 + 30;
+const MAX_BAR_HEIGHT = 5.3;
 
 const {UIManager} = NativeModules;
 
@@ -24,48 +25,57 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 export default class WaterTracker extends React.Component {
   state = {
     barHeight: 0,
-    goalHeight: BASE_HEIGHT + 230,
+    goalHeight: 230,
     goalReached: false,
     isModalVisible: false,
     goalText: '',
   };
 
-  _onPress = () => {
-    LayoutAnimation.spring();
-
-    if (this.state.barHeight + 0.1 > 5.3) {
-      console.log('tooo biggg');
-    } else {
-      this.setState({
-        barHeight: this.state.barHeight + 0.1,
-        goalHeight: -HEIGHT * 0.4,
-      });
-    }
-
-    if (this.state.barHeight > 1) {
+  _checkGoalReached = (barHeight, goalHeight) => {
+    if (barHeight * 100 >= goalHeight) {
       this.setState({
         goalReached: true,
       });
-    }
-  };
-
-  _onPressForModal = () => {
-    this.setState({
-      isModalVisible: !this.state.isModalVisible,
-    });
-
-    // TODO add validation checks for number
-    if (this.state.goalText !== '') {
+    } else {
       this.setState({
-        goalHeight: BASE_HEIGHT + this.state.goalText * 100,
-        goalText: '',
+        goalReached: false,
       });
     }
   };
 
-  _setText = (value) => {
+  _onPress = () => {
+    LayoutAnimation.spring();
+
+    const barHeight = this.state.barHeight;
+    if (barHeight > MAX_BAR_HEIGHT) {
+      console.log('tooo biggg');
+    } else {
+      this.setState({
+        barHeight: barHeight + 0.1,
+      });
+    }
+
+    this._checkGoalReached(barHeight, this.state.goalHeight);
+  };
+
+  _onPressForModal = () => {
+    const input = this.state.goalText;
+    const num = parseFloat(input);
+    if (
+      input !== '' &&
+      !Number.isNaN(num) &&
+      num > 0 &&
+      num <= MAX_BAR_HEIGHT
+    ) {
+      const goalHeight = this.state.goalText * 100;
+      this.setState({
+        goalHeight: goalHeight,
+      });
+      this._checkGoalReached(this.state.barHeight, goalHeight);
+    }
     this.setState({
-      goalText: value,
+      isModalVisible: !this.state.isModalVisible,
+      goalText: '',
     });
   };
 
@@ -80,13 +90,20 @@ export default class WaterTracker extends React.Component {
           visible={this.state.isModalVisible}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <TextInput
-                style={styles.input}
-                onChangeText={(value) => this._setText(value)}
-                value={this.state.goalText}
-                placeholder="e.g., 2.3"
-              />
-              <Text style={styles.modalText}>L</Text>
+              <View style={styles.rowContainer}>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={(value) => {
+                    this.setState({
+                      goalText: value,
+                    });
+                  }}
+                  value={this.state.goalText}
+                  maxLength={4}
+                  placeholder="e.g., 2.3"
+                />
+                <Text style={styles.modalText}>L</Text>
+              </View>
 
               <TouchableOpacity
                 onPress={this._onPressForModal}
@@ -101,7 +118,7 @@ export default class WaterTracker extends React.Component {
           style={[
             styles.goalLine,
             {
-              bottom: this.state.goalHeight,
+              bottom: BASE_HEIGHT + this.state.goalHeight,
               borderTopColor: this.state.goalReached ? '#2ECC40' : '#FF4136',
             },
           ]}>
@@ -139,7 +156,9 @@ export default class WaterTracker extends React.Component {
         <View style={styles.trackerContainer}>
           <View style={[styles.bar, {height: this.state.barHeight * 100}]} />
 
-          <TouchableOpacity onPress={this._onPress} style={styles.button}>
+          <TouchableOpacity
+            onPress={this._onPress}
+            style={[styles.button, {marginTop: 30}]}>
             <Text style={styles.buttonText}>Add 100 ml</Text>
           </TouchableOpacity>
         </View>
@@ -184,8 +203,8 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: 'black',
-    marginTop: 30,
     width: WIDTH * 0.4,
+    marginTop: 10,
     height: 40,
     borderRadius: 10,
     alignItems: 'center',
@@ -212,7 +231,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
+    marginTop: 20,
   },
   modalView: {
     margin: 20,
@@ -229,19 +248,19 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  openButton: {
-    backgroundColor: '#F194FF',
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+  rowContainer: {
+    flexDirection: 'row',
   },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+  input: {
+    borderBottomColor: '#DDDDDD',
+    borderBottomWidth: 1,
+    width: 70,
+    padding: 5,
   },
   modalText: {
-    marginBottom: 15,
+    bottom: -5,
+    marginLeft: 10,
     textAlign: 'center',
+    fontSize: 15,
   },
 });

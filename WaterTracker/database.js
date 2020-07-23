@@ -91,7 +91,7 @@ export async function updateWaterData(email, date, waterCount) {
 }
 
 /**
- * Updates (or adds it if it doesn't already exist) the water data of the current day.
+ * Gets the water data of the current day. Returns 0 otherwise.
  * @param {String} email The email of the current user.
  * @param {String} date The date of the entry to be updated.
  * @return {float} The amount of water the user has already had.
@@ -130,78 +130,3 @@ export async function getWaterData(email, date) {
     await client.close();
   }
 }
-
-// async function run() {
-//   try {
-//     await client.connect();
-//     console.log('Connected correctly to server');
-//     const db = client.db(dbName);
-
-//     // Use this collection
-//     const col = db.collection(dummyEmail);
-
-//     // Construct a document
-//     const accountInformation = {
-//       name: 'Riya Narayan',
-//       waterData: [
-//         {
-//           date: '2020-07-23',
-//           waterCounter: 4.3, // in liters
-//         },
-//         {
-//           date: '2020-07-22',
-//           waterCounter: 2.0, // in liters
-//         },
-//       ],
-//     };
-
-//     // Insert a single document, wait for promise so we can read it back
-//     const p = await col.insertOne(accountInformation);
-//     console.log('promise', p);
-//     // Find one document
-//     const myDoc = await col.findOne();
-//     // Print to the console
-//     console.log('doc', myDoc);
-
-//     // add more water data
-//     col.updateOne(
-//       {_id: myDoc._id},
-//       {
-//         $push: {
-//           waterData: {
-//             date: '2020-07-21',
-//             waterCounter: 2.7, // in liters
-//           },
-//         },
-//       },
-//     );
-
-//     // update today's counter
-//     col.updateOne(
-//       {_id: myDoc._id, 'waterData.date': '2020-07-22'},
-//       {$set: {'waterData.$.waterCounter': 2.3}},
-//     );
-
-//     // check if it exists
-//     // const found = await col.find({'waterData.date': '2020-07-22'});
-//     const found = await col.findOne({'waterData.date': {$gt: '2020-07-22'}});
-
-//     const notfound = await col.findOne({'waterData.date': {$gt: '2020-07-27'}});
-
-//     console.log('found', found);
-//     console.log('notfuond', notfound);
-
-//     // update one that doesn't exist
-//     // col.updateOne(
-//     //   {_id: myDoc._id, 'waterData.date': '2020-07-25'},
-//     //   {$set: {'waterData.$.waterCounter': 1.7}},
-//     //   {upsert: true},
-//     // );
-//   } catch (err) {
-//     console.log(err.stack);
-//   } finally {
-//     await client.close();
-//   }
-// }
-
-// run().catch(console.dir);

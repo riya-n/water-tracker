@@ -12,6 +12,8 @@ import {
   TextInput,
 } from 'react-native';
 
+import {dummyEmail, updateWaterData, getWaterData} from './database.js';
+
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
 const BASE_HEIGHT = -HEIGHT * 0.7 + 30;
@@ -24,7 +26,11 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 
 export default class WaterTracker extends React.Component {
   state = {
-    barHeight: 0,
+    // get initial value from db
+    barHeight: getWaterData(
+      dummyEmail,
+      new Date().toISOString().substring(0, 10),
+    ),
     goalHeight: 230,
     goalReached: false,
     isModalVisible: false,
@@ -53,6 +59,13 @@ export default class WaterTracker extends React.Component {
       this.setState({
         barHeight: barHeight + 0.1,
       });
+
+      // update in db
+      updateWaterData(
+        dummyEmail,
+        new Date().toISOString().substring(0, 10),
+        barHeight + 0.1,
+      );
     }
 
     this._checkGoalReached(barHeight, this.state.goalHeight);

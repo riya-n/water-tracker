@@ -24,6 +24,7 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 
 export default class WaterTracker extends React.Component {
   state = {
+    // get initial value from db
     barHeight: 0,
     goalHeight: 230,
     goalReached: false,
@@ -53,6 +54,8 @@ export default class WaterTracker extends React.Component {
       this.setState({
         barHeight: barHeight + 0.1,
       });
+
+      // update this in the db too
     }
 
     this._checkGoalReached(barHeight, this.state.goalHeight);

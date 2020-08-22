@@ -4,3 +4,4 @@ This mobile application (react native) will allow you to track how much water yo
 
 ![alt-text](datapage.gif | width=100)
 ![alt-text](homepage.gif)
+<img src="datapage.gif" height="24">

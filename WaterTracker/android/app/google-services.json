@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "900519763885",
+    "firebase_url": "https://water-tracker-dfe8e.firebaseio.com",
+    "project_id": "water-tracker-dfe8e",
+    "storage_bucket": "water-tracker-dfe8e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:900519763885:android:1ed11101fc140db6cf8b24",
+        "android_client_info": {
+          "package_name": "com.watertracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "900519763885-hl8el9qn0pnqhlihc3i99827nahrtdjr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0v6EIDditfBcs2LCZazer2J3uVRjWONY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "900519763885-hl8el9qn0pnqhlihc3i99827nahrtdjr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

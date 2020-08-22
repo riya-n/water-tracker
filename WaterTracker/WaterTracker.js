@@ -11,6 +11,16 @@ import {
   Modal,
   TextInput,
 } from 'react-native';
+import {
+  updateWaterCount,
+  updateWaterGoal,
+  getWaterCount,
+  getWaterGoal,
+  updateCounterTotal,
+  updateCounterOne,
+  updateCounterThree,
+  updateCounterFive,
+} from './firebase.js';
 
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
@@ -23,14 +33,41 @@ UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
 export default class WaterTracker extends React.Component {
-  state = {
-    // get initial value from db
-    barHeight: 0,
-    goalHeight: 230,
-    goalReached: false,
-    isModalVisible: false,
-    goalText: '',
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      barHeight: 0,
+      goalHeight: 230,
+      goalReached: false,
+      isModalVisible: false,
+      goalText: '',
+    };
+
+    // get initial value from props
+    getWaterCount().then((data) => {
+      // would be null if there is no entry from today
+      if (data != null) {
+        this.setState({
+          barHeight: data,
+        });
+        this._checkGoalReached(this.state.barHeight, this.state.goalHeight);
+      }
+    });
+
+    // get initial value from props
+    getWaterGoal().then((data) => {
+      // would be null if there is no entry from today
+      if (data == null) {
+        updateWaterGoal(this.state.goalHeight / 100);
+      } else {
+        this.setState({
+          goalHeight: data * 100,
+        });
+        this._checkGoalReached(this.state.barHeight, this.state.goalHeight);
+      }
+    });
+  }
 
   _checkGoalReached = (barHeight, goalHeight) => {
     if (barHeight * 100 >= goalHeight) {
@@ -47,15 +84,30 @@ export default class WaterTracker extends React.Component {
   _onPress = () => {
     LayoutAnimation.spring();
 
-    const barHeight = this.state.barHeight;
-    if (barHeight > MAX_BAR_HEIGHT) {
-      console.log('tooo biggg');
-    } else {
+    let barHeight = this.state.barHeight;
+    if (barHeight < MAX_BAR_HEIGHT) {
+      barHeight = barHeight + 0.1;
       this.setState({
-        barHeight: barHeight + 0.1,
+        barHeight: barHeight,
       });
-
+      barHeight = parseFloat(barHeight.toFixed(1));
       // update this in the db too
+      updateWaterCount(barHeight);
+
+      // update the counter when it equals the value
+      // (instead of just checking if it's over) so we don't double count
+      if (barHeight === 0.1) {
+        updateCounterTotal();
+      }
+      if (barHeight === 1.0) {
+        updateCounterOne();
+      }
+      if (barHeight === 3.0) {
+        updateCounterThree();
+      }
+      if (barHeight === 5.0) {
+        updateCounterFive();
+      }
     }
 
     this._checkGoalReached(barHeight, this.state.goalHeight);
@@ -74,6 +126,7 @@ export default class WaterTracker extends React.Component {
       this.setState({
         goalHeight: goalHeight,
       });
+      updateWaterGoal(parseFloat(goalHeight / 100));
       this._checkGoalReached(this.state.barHeight, goalHeight);
     }
     this.setState({
@@ -85,7 +138,13 @@ export default class WaterTracker extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>How much water have I had today?</Text>
+        <TouchableOpacity
+          style={styles.title}
+          onPress={() => this.props.navigation.navigate('Data')}>
+          <Text style={{color: '#ce5e7d', fontSize: 18}}>
+            Show All Water Data
+          </Text>
+        </TouchableOpacity>
 
         <Modal
           animationType="fade"
@@ -122,14 +181,16 @@ export default class WaterTracker extends React.Component {
             styles.goalLine,
             {
               bottom: BASE_HEIGHT + this.state.goalHeight,
-              borderTopColor: this.state.goalReached ? '#2ECC40' : '#FF4136',
+              borderTopColor: this.state.goalReached ? '#b5ce5e' : '#ce5e7d',
             },
           ]}>
           <TouchableOpacity onPress={this._onPressForModal}>
             <Text
               style={[
                 styles.subtitle,
-                {color: this.state.goalReached ? '#2ECC40' : '#FF4136'},
+                {
+                  color: this.state.goalReached ? '#b5ce5e' : '#ce5e7d',
+                },
               ]}>
               Set Goal
             </Text>
@@ -176,7 +237,7 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    marginVertical: 30,
+    marginBottom: 30,
     marginHorizontal: 30,
     fontSize: 40,
   },
@@ -198,7 +259,7 @@ const styles = StyleSheet.create({
     bottom: -HEIGHT * 0.7,
   },
   bar: {
-    backgroundColor: '#ADD8E6',
+    backgroundColor: '#d4ebf2',
     width: WIDTH * 0.3,
     borderRadius: 10,
     marginTop: 30,

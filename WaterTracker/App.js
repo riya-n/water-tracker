@@ -16,8 +16,8 @@ const App: () => React$Node = () => {
   return (
     <>
       <SafeAreaView>
-        <WaterTracker />
-        {/* <AllWaterData /> */}
+        {/* <WaterTracker /> */}
+        <AllWaterData />
       </SafeAreaView>
     </>
   );

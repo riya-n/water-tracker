@@ -105,17 +105,7 @@ async function getContributionGraphData() {
   return data;
 }
 
-// TODO
-function onPressDay(data) {
-  if (data.count === 0) {
-    console.log('date', data.date.toISOString().substr(0, 10));
-  } else {
-    console.log('date', data.date);
-  }
-  console.log('count', data.count);
-}
-
-function showContributionGraph(contributionGraphData) {
+function showContributionGraph(contributionGraphData, onPressDay) {
   return (
     <ContributionGraph
       values={contributionGraphData}
@@ -123,7 +113,6 @@ function showContributionGraph(contributionGraphData) {
       numDays={CONTRIBUTION_DAYS}
       width={CHART_WIDTH}
       height={CHART_HEIGHT}
-      onDayPress={(data) => onPressDay(data)}
       chartConfig={chartConfig}
       style={styles.chart}
     />

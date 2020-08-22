@@ -10,12 +10,14 @@ import React from 'react';
 import {SafeAreaView} from 'react-native';
 
 import WaterTracker from './WaterTracker.js';
+import AllWaterData from './AllWaterData.js';
 
 const App: () => React$Node = () => {
   return (
     <>
       <SafeAreaView>
         <WaterTracker />
+        {/* <AllWaterData /> */}
       </SafeAreaView>
     </>
   );

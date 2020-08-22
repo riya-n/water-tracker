@@ -77,8 +77,118 @@ export async function getWaterGoal(date = getTodaysDate()) {
     .ref(`/${userId}/waterData/${date}/goal`)
     .once('value')
     .then((snapshot) => {
-      console.log('snaoshot', snapshot);
       return snapshot.val();
+    });
+}
+
+/**
+ * Gets the counters data for the current user.
+ * @return {Object} The counter data.
+ */
+export async function getCounterData() {
+  const userId = getCurrentUserId();
+  const oneL = await reference
+    .ref(`/${userId}/counters/oneL`)
+    .once('value')
+    .then((snapshot) => {
+      return snapshot.val();
+    });
+  const threeL = await reference
+    .ref(`/${userId}/counters/threeL`)
+    .once('value')
+    .then((snapshot) => {
+      return snapshot.val();
+    });
+  const fiveL = await reference
+    .ref(`/${userId}/counters/fiveL`)
+    .once('value')
+    .then((snapshot) => {
+      return snapshot.val();
+    });
+  const total = await reference
+    .ref(`/${userId}/counters/total`)
+    .once('value')
+    .then((snapshot) => {
+      return snapshot.val();
+    });
+
+  return {
+    oneL: oneL,
+    threeL: threeL,
+    fiveL: fiveL,
+    total: total,
+  };
+}
+
+/**
+ * Increments the counter value for the one liter counter.
+ */
+export async function updateCounterOne() {
+  const userId = getCurrentUserId();
+  await reference
+    .ref(`/${userId}/counters/oneL`)
+    .once('value')
+    .then((snapshot) => {
+      reference
+        .ref(`/${userId}/counters`)
+        .update({
+          oneL: snapshot.val() + 1,
+        })
+        .then(() => console.log('Data counter oneL'));
+    });
+}
+
+/**
+ * Increments the counter value for the three liter counter.
+ */
+export async function updateCounterThree() {
+  const userId = getCurrentUserId();
+  await reference
+    .ref(`/${userId}/counters/threeL`)
+    .once('value')
+    .then((snapshot) => {
+      reference
+        .ref(`/${userId}/counters`)
+        .update({
+          threeL: snapshot.val() + 1,
+        })
+        .then(() => console.log('Data counter threeL'));
+    });
+}
+
+/**
+ * Increments the counter value for the five liter counter.
+ */
+export async function updateCounterFive() {
+  const userId = getCurrentUserId();
+  await reference
+    .ref(`/${userId}/counters/fiveL`)
+    .once('value')
+    .then((snapshot) => {
+      reference
+        .ref(`/${userId}/counters`)
+        .update({
+          fiveL: snapshot.val() + 1,
+        })
+        .then(() => console.log('Data counter fiveL'));
+    });
+}
+
+/**
+ * Increments the counter value for the total counter.
+ */
+export async function updateCounterTotal() {
+  const userId = getCurrentUserId();
+  await reference
+    .ref(`/${userId}/counters/total`)
+    .once('value')
+    .then((snapshot) => {
+      reference
+        .ref(`/${userId}/counters`)
+        .update({
+          total: snapshot.val() + 1,
+        })
+        .then(() => console.log('Data counter total'));
     });
 }
 
@@ -91,5 +201,9 @@ export function getTodaysDate() {
   if (month < 10) {
     month = `0${month}`;
   }
-  return `${date.getFullYear()}-${month}-${date.getDate()}`;
+  let day = date.getDate();
+  if (day < 10) {
+    day = `0${day}`;
+  }
+  return `${date.getFullYear()}-${month}-${day}`;
 }

@@ -16,6 +16,10 @@ import {
   updateWaterGoal,
   getWaterCount,
   getWaterGoal,
+  updateCounterTotal,
+  updateCounterOne,
+  updateCounterThree,
+  updateCounterFive,
 } from './firebase.js';
 
 const WIDTH = Dimensions.get('window').width;
@@ -42,18 +46,17 @@ export default class WaterTracker extends React.Component {
 
     // get initial value from props
     getWaterCount().then((data) => {
-      console.log('initial water count', data);
       // would be null if there is no entry from today
       if (data != null) {
         this.setState({
           barHeight: data,
         });
+        this._checkGoalReached(this.state.barHeight, this.state.goalHeight);
       }
     });
 
     // get initial value from props
     getWaterGoal().then((data) => {
-      console.log('initial water goal', data);
       // would be null if there is no entry from today
       if (data == null) {
         updateWaterGoal(this.state.goalHeight / 100);
@@ -61,6 +64,7 @@ export default class WaterTracker extends React.Component {
         this.setState({
           goalHeight: data * 100,
         });
+        this._checkGoalReached(this.state.barHeight, this.state.goalHeight);
       }
     });
   }
@@ -81,15 +85,29 @@ export default class WaterTracker extends React.Component {
     LayoutAnimation.spring();
 
     let barHeight = this.state.barHeight;
-    if (barHeight > MAX_BAR_HEIGHT) {
-      console.log('tooo biggg');
-    } else {
+    if (barHeight < MAX_BAR_HEIGHT) {
       barHeight = barHeight + 0.1;
       this.setState({
         barHeight: barHeight,
       });
+      barHeight = parseFloat(barHeight.toFixed(1));
       // update this in the db too
-      updateWaterCount(parseFloat(barHeight.toFixed(1)));
+      updateWaterCount(barHeight);
+
+      // update the counter when it equals the value
+      // (instead of just checking if it's over) so we don't double count
+      if (barHeight === 0.1) {
+        updateCounterTotal();
+      }
+      if (barHeight === 1.0) {
+        updateCounterOne();
+      }
+      if (barHeight === 3.0) {
+        updateCounterThree();
+      }
+      if (barHeight === 5.0) {
+        updateCounterFive();
+      }
     }
 
     this._checkGoalReached(barHeight, this.state.goalHeight);

@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   NativeModules,
@@ -15,12 +14,10 @@ import {
   ContributionGraph,
 } from 'react-native-chart-kit';
 import moment from 'moment';
-import WaterTracker from './WaterTracker.js';
 
 moment().format();
 
 const WIDTH = Dimensions.get('window').width;
-const HEIGHT = Dimensions.get('window').height;
 const CHART_WIDTH = WIDTH * 0.9;
 const CHART_HEIGHT = 220;
 const CONTRIBUTION_DAYS = 105;
@@ -34,7 +31,7 @@ const chartConfig = {
   decimalPlaces: 0,
   backgroundGradientFrom: 'white',
   backgroundGradientTo: 'white',
-  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+  color: (opacity = 1) => `rgba(58, 159, 191, ${opacity})`,
   useShadowColorFromDataset: false,
 };
 
@@ -184,20 +181,20 @@ export default class AllWaterData extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>My Water Data</Text>
+        {/* <Text style={styles.title}>My Water Data</Text> */}
         <ScrollView style={styles.scrollView}>
           <View style={styles.container}>
-            <Text style={styles.subtitle}>From the past few days...</Text>
+            <Text style={styles.subtitle}>Past 5 Days</Text>
             {showBarChart(this.state.barChartData)}
           </View>
 
           <View style={styles.container}>
-            <Text style={styles.subtitle}>From the past few months...</Text>
+            <Text style={styles.subtitle}>Past 3 Months</Text>
             {showContributionGraph(this.state.contributionGraphData)}
           </View>
 
           <View style={styles.container}>
-            <Text style={styles.subtitle}>From the past year...</Text>
+            <Text style={styles.subtitle}>Past Entries</Text>
             {showProgressChart(this.state.progressChartData)}
           </View>
         </ScrollView>
@@ -208,10 +205,10 @@ export default class AllWaterData extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 20,
+    paddingVertical: 10,
   },
   scrollView: {
-    marginBottom: 200,
+    paddingBottom: 20,
   },
   title: {
     textAlign: 'center',
@@ -220,11 +217,12 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   subtitle: {
-    textAlign: 'left',
+    textAlign: 'center',
     marginLeft: 30,
     marginVertical: 10,
     fontSize: 15,
     zIndex: 999,
+    fontWeight: 'bold',
   },
   chart: {
     alignItems: 'center',

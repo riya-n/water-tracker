@@ -16,12 +16,44 @@ import AllWaterData from './AllWaterData';
 
 const Stack = createStackNavigator();
 
+const theme = {
+  colors: {
+    primary: '#ce5e7d',
+    background: 'white',
+    border: 'white',
+  },
+};
+
 const App: () => React$Node = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={theme}>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Tracker" component={WaterTracker} />
-        <Stack.Screen name="Data" component={AllWaterData} />
+        <Stack.Screen
+          name="Tracker"
+          component={WaterTracker}
+          options={{
+            title: 'Daily Tracker',
+            headerTitleStyle: {
+              fontSize: 30,
+            },
+            headerStyle: {
+              height: 130,
+            },
+          }}
+        />
+        <Stack.Screen
+          name="Data"
+          component={AllWaterData}
+          options={{
+            title: 'All Water Data',
+            headerTitleStyle: {
+              fontSize: 30,
+            },
+            headerStyle: {
+              height: 130,
+            },
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

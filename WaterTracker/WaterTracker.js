@@ -10,7 +10,6 @@ import {
   Dimensions,
   Modal,
   TextInput,
-  Button,
 } from 'react-native';
 import {
   updateWaterCount,
@@ -22,7 +21,6 @@ import {
   updateCounterThree,
   updateCounterFive,
 } from './firebase.js';
-import AllWaterData from './AllWaterData.js';
 
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
@@ -70,17 +68,6 @@ export default class WaterTracker extends React.Component {
       }
     });
   }
-
-  static navigationOptions = {
-    title: 'Home',
-    headerStyle: {
-      backgroundColor: '#03A9F4',
-    },
-    headerTintColor: '#fff',
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    },
-  };
 
   _checkGoalReached = (barHeight, goalHeight) => {
     if (barHeight * 100 >= goalHeight) {
@@ -151,12 +138,13 @@ export default class WaterTracker extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Water Tracker</Text>
-        <Button
-          style={styles.subtitle}
-          title="Show All Water Data"
-          onPress={() => this.props.navigation.navigate('Data')}
-        />
+        <TouchableOpacity
+          style={styles.title}
+          onPress={() => this.props.navigation.navigate('Data')}>
+          <Text style={{color: '#ce5e7d', fontSize: 18}}>
+            Show All Water Data
+          </Text>
+        </TouchableOpacity>
 
         <Modal
           animationType="fade"
@@ -193,14 +181,16 @@ export default class WaterTracker extends React.Component {
             styles.goalLine,
             {
               bottom: BASE_HEIGHT + this.state.goalHeight,
-              borderTopColor: this.state.goalReached ? '#2ECC40' : '#FF4136',
+              borderTopColor: this.state.goalReached ? '#b5ce5e' : '#ce5e7d',
             },
           ]}>
           <TouchableOpacity onPress={this._onPressForModal}>
             <Text
               style={[
                 styles.subtitle,
-                {color: this.state.goalReached ? '#2ECC40' : '#FF4136'},
+                {
+                  color: this.state.goalReached ? '#b5ce5e' : '#ce5e7d',
+                },
               ]}>
               Set Goal
             </Text>
@@ -247,7 +237,7 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    marginTop: 30,
+    marginBottom: 30,
     marginHorizontal: 30,
     fontSize: 40,
   },
@@ -269,7 +259,7 @@ const styles = StyleSheet.create({
     bottom: -HEIGHT * 0.7,
   },
   bar: {
-    backgroundColor: '#ADD8E6',
+    backgroundColor: '#d4ebf2',
     width: WIDTH * 0.3,
     borderRadius: 10,
     marginTop: 30,

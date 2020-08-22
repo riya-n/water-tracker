@@ -11,6 +11,12 @@ import {
   Modal,
   TextInput,
 } from 'react-native';
+import {
+  updateWaterCount,
+  updateWaterGoal,
+  getWaterCount,
+  getWaterGoal,
+} from './firebase.js';
 
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
@@ -23,14 +29,41 @@ UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
 export default class WaterTracker extends React.Component {
-  state = {
-    // get initial value from db
-    barHeight: 0,
-    goalHeight: 230,
-    goalReached: false,
-    isModalVisible: false,
-    goalText: '',
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      barHeight: 0,
+      goalHeight: 230,
+      goalReached: false,
+      isModalVisible: false,
+      goalText: '',
+    };
+
+    // get initial value from props
+    getWaterCount().then((data) => {
+      console.log('initial water count', data);
+      // would be null if there is no entry from today
+      if (data != null) {
+        this.setState({
+          barHeight: data,
+        });
+      }
+    });
+
+    // get initial value from props
+    getWaterGoal().then((data) => {
+      console.log('initial water goal', data);
+      // would be null if there is no entry from today
+      if (data == null) {
+        updateWaterGoal(this.state.goalHeight / 100);
+      } else {
+        this.setState({
+          goalHeight: data * 100,
+        });
+      }
+    });
+  }
 
   _checkGoalReached = (barHeight, goalHeight) => {
     if (barHeight * 100 >= goalHeight) {
@@ -47,15 +80,16 @@ export default class WaterTracker extends React.Component {
   _onPress = () => {
     LayoutAnimation.spring();
 
-    const barHeight = this.state.barHeight;
+    let barHeight = this.state.barHeight;
     if (barHeight > MAX_BAR_HEIGHT) {
       console.log('tooo biggg');
     } else {
+      barHeight = barHeight + 0.1;
       this.setState({
-        barHeight: barHeight + 0.1,
+        barHeight: barHeight,
       });
-
       // update this in the db too
+      updateWaterCount(parseFloat(barHeight.toFixed(1)));
     }
 
     this._checkGoalReached(barHeight, this.state.goalHeight);
@@ -74,6 +108,7 @@ export default class WaterTracker extends React.Component {
       this.setState({
         goalHeight: goalHeight,
       });
+      updateWaterGoal(parseFloat(goalHeight / 100));
       this._checkGoalReached(this.state.barHeight, goalHeight);
     }
     this.setState({

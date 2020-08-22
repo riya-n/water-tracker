@@ -15,6 +15,8 @@ import {
   ContributionGraph,
 } from 'react-native-chart-kit';
 import moment from 'moment';
+import WaterTracker from './WaterTracker.js';
+
 moment().format();
 
 const WIDTH = Dimensions.get('window').width;

@@ -6,20 +6,24 @@
  * @flow strict-local
  */
 
+import 'react-native-gesture-handler';
 import React from 'react';
-import {SafeAreaView} from 'react-native';
 
-import WaterTracker from './WaterTracker.js';
-import AllWaterData from './AllWaterData.js';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import WaterTracker from './WaterTracker';
+import AllWaterData from './AllWaterData';
+
+const Stack = createStackNavigator();
 
 const App: () => React$Node = () => {
   return (
-    <>
-      <SafeAreaView>
-        {/* <WaterTracker /> */}
-        <AllWaterData />
-      </SafeAreaView>
-    </>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Tracker" component={WaterTracker} />
+        <Stack.Screen name="Data" component={AllWaterData} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 

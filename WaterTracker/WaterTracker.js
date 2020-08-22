@@ -10,6 +10,7 @@ import {
   Dimensions,
   Modal,
   TextInput,
+  Button,
 } from 'react-native';
 import {
   updateWaterCount,
@@ -21,6 +22,7 @@ import {
   updateCounterThree,
   updateCounterFive,
 } from './firebase.js';
+import AllWaterData from './AllWaterData.js';
 
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
@@ -68,6 +70,17 @@ export default class WaterTracker extends React.Component {
       }
     });
   }
+
+  static navigationOptions = {
+    title: 'Home',
+    headerStyle: {
+      backgroundColor: '#03A9F4',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+  };
 
   _checkGoalReached = (barHeight, goalHeight) => {
     if (barHeight * 100 >= goalHeight) {
@@ -138,7 +151,12 @@ export default class WaterTracker extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>How much water have I had today?</Text>
+        <Text style={styles.title}>Water Tracker</Text>
+        <Button
+          style={styles.subtitle}
+          title="Show All Water Data"
+          onPress={() => this.props.navigation.navigate('Data')}
+        />
 
         <Modal
           animationType="fade"
@@ -229,7 +247,7 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    marginVertical: 30,
+    marginTop: 30,
     marginHorizontal: 30,
     fontSize: 40,
   },

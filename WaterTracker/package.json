@@ -14,7 +14,7 @@
     "@react-native-firebase/database": "^7.4.2",
     "events": "^3.2.0",
     "fs": "0.0.1-security",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "mongodb": "^3.5.9",
     "react": "16.13.1",
     "react-native": "0.63.1",
